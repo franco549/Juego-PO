@@ -1,0 +1,45 @@
+title Diagrama de Secuencia: Uso de Pocion
+
+actor Jugador
+participant Turno
+participant Heroe
+participant Inventario
+participant Pocion
+
+Jugador->Turno: ejecutarTurno(accion)
+activate Turno
+
+Turno->Heroe: usarItem(item)
+activate Heroe
+
+Heroe->Inventario: buscarItem("Pocion de Salud")
+activate Inventario
+
+Inventario-->Heroe: retorna item (Pocion)
+
+alt Pocion != null (Encontrada)
+    
+    Heroe->Pocion: usar(Heroe)
+    activate Pocion
+    
+    Pocion-->Heroe: curarse(cantidad)
+    activate Heroe
+    
+    Heroe->Pocion: retorna estado curado
+    
+    Pocion-->Heroe: retorna confirmacionDeUso
+    
+    Heroe->Inventario: eliminarItem(item)
+    activate Inventario
+    
+    Inventario-->Heroe: retorna confirmacionEliminado
+    
+else Pocion == null (No encontrada)
+    
+    Heroe-->Turno: retorna errorItemNoEncontrado
+    
+end
+
+Heroe-->Turno: retorna accionTerminada
+
+Turno-->Jugador: retorna turnoFinalizado

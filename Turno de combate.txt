@@ -1,0 +1,48 @@
+title Turno de Combate
+
+participant Orquestador
+participant Turno
+participant Entidad
+participant Accion
+participant Objetivo
+
+autoactivation on
+
+Orquestador->Turno: crearTurno()
+
+Turno->Entidad: elegirAccion()
+Entidad-->Turno: Accion elegida
+
+Turno->Accion: ejecutar()
+
+alt [Accion = Atacar]
+    Accion->Entidad: verificarDaño
+    Entidad-->Accion: dañoCalculado
+    Accion->Objetivo: recibirDaño(dano)
+
+
+else [Accion = Habilidad]
+    Accion->Entidad: verificarMana()
+    opt [mana suficiente]
+        Accion->Entidad: verificarDaño
+        Entidad-->Accion: dañoCalculado
+        Accion->Objetivo: recibirDaño
+        
+    end
+end
+
+Objetivo->Objetivo: restarVida
+Objetivo-->Accion: vidaRestante
+
+opt [vidaRestante <= 0]
+    Accion->Objetivo: morir()
+end
+
+Turno->Orquestador: turnoFinalizado()
+
+Orquestador->Orquestador: verificarFin()
+
+
+
+
+
